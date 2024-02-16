@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import LoginPage  from '../pages/LoginPage';
 import UserCredentials from '../helpers/UserCredentials';
-import ProductsPage from '../pages/Productspage';
+import ProductsPage from '../pages/ProductsPage';
 import GlobalConstants from '../helpers/GlobalConstants';
 import { PagesURL } from '../helpers/PagesURLEnum';
 
