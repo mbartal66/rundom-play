@@ -7,5 +7,6 @@ export default class UserCredentials{
 
     // Possible password options
     public static readonly CORECT_PASSWORD = 'secret_sauce';
+    public static readonly WRONG_PASSWORD = 'wrong_password';
 
 }

@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
 import LoginPage  from '../pages/LoginPage';
 import UserCredentials from '../helpers/UserCredentials';
-import ApplicationURL from '../helpers/ApplicationURL';
+import ProductsPage from '../pages/Productspage';
+import GlobalConstants from '../helpers/GlobalConstants';
+import { PagesURL } from '../helpers/PagesURLEnum';
+
 
 test('Demo Test', async ({ page }) => {
   
@@ -12,6 +15,10 @@ test('Demo Test', async ({ page }) => {
 test('Demo Test 2', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.loginToApplication(UserCredentials.PERFORMANCE_GLITCH_USER);
+  const productsPage = new ProductsPage(page);
+  await productsPage.validatePageUrl(GlobalConstants.BASE_URL + PagesURL.INVENTORY);
+  await productsPage.validateTitle("Products");
+
 });
 
 test('Sanity Test', async ({ page }) => {
