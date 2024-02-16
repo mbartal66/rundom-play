@@ -1,5 +1,4 @@
 import { Locator, Page, expect } from "@playwright/test";
-import UserCredentials from "../helpers/UserCredentials";
 import GlobalConstants from "../helpers/GlobalConstants";
 import { ErrorMessages } from "../helpers/ErrorMessagesEnum";
 import { BasePage } from "./BasePage";
@@ -19,8 +18,8 @@ export default class LoginPage extends BasePage{
         this.errorMessage = this.page.locator('[data-test="error"]');
     }
 
-    public async loginToApplication(username = UserCredentials.STANDARD_USER, 
-        password = UserCredentials.CORECT_PASSWORD, 
+    public async loginToApplication(username = process.env.STANDARD_USER as string, 
+        password = process.env.CORECT_PASSWORD as string, 
         url = GlobalConstants.BASE_URL) {
         
             await this.page.goto(url);
