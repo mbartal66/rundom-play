@@ -24,9 +24,12 @@ export default class LoginPage extends BasePage{
         
             await this.page.goto(url);
             await this.validatePageUrl(url);
-            await this.usernameField.fill(username);
-            await this.passwordField.fill(password);
-            await this.loginButton.click();
+            /* await this.fillElement(this.usernameField, username);
+            await this.fillElement(this.passwordField, password); */
+            await this.typeTextInElement(this.usernameField, username, 100);
+            await this.typeTextInElement(this.passwordField, password);
+
+            await this.clickElement(this.loginButton);
     }
 
 

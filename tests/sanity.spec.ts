@@ -3,6 +3,7 @@ import LoginPage  from '../pages/LoginPage';
 import ProductsPage from '../pages/ProductsPage';
 import GlobalConstants from '../helpers/GlobalConstants';
 import { PagesURL } from '../helpers/PagesURLEnum';
+import CartPage from '../pages/CartPage';
 
 
 test('Demo Test', async ({ page }) => {
@@ -22,12 +23,26 @@ test('Demo Test 2', async ({ page }) => {
 
 test('Sanity Test', async ({ page }) => {
   const loginPage = new LoginPage(page);
- 
+  const productsPage = new ProductsPage(page);
+  const cartPage = new CartPage(page);
+
   await loginPage.loginToApplication();
-  await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+  await productsPage.validatePageUrl(GlobalConstants.BASE_URL + PagesURL.INVENTORY);
+  await productsPage.validateTitle("Products");
+  /* await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
   await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click();
-  await page.locator('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]').click();
-  await page.locator('a').filter({ hasText: '3' }).click();
+  await page.locator('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]').click(); */
+  let products = ['Sauce Labs Backpack', 'Sauce Labs Fleece Jacket', 'Sauce Labs Onesie'];
+  await productsPage.chooseProductsByTitle(products);
+  /* await productsPage.chooseProductByTitle('Sauce Labs Backpack');
+  await productsPage.chooseProductByTitle('Sauce Labs Fleece Jacket');
+  await productsPage.chooseProductByTitle('Sauce Labs Onesie'); */
+  await productsPage.validateNumberOfItemsInCart(products.length.toString());
+  await productsPage.gotoCart();
+  //await page.locator('a').filter({ hasText: '3' }).click();
+  await cartPage.validateTitle("Your Cart");
+  await cartPage.validateNumberOfCartItems(products.length);
+
   await page.locator('[data-test="checkout"]').click();
   await page.locator('[data-test="firstName"]').fill('Meir');
   await page.locator('[data-test="lastName"]').fill('Bar-Tal');
