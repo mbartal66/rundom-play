@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Generate a unique output folder.
+const currentDateTime = new Date().toISOString().replace(/[.]/,"").slice(0, 19); 
+const outputFolder = `/tests/results/results-${currentDateTime}`;
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -17,19 +20,27 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : 2,
+  workers: process.env.CI ? 1 : 4,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: process.env.CI ? 'github' : [['html', { outputFolder }]],
+  // Whether to report slow tests. See https://playwright.dev/docs/test/reporter#slow-tests
+  reportSlowTests: null,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+   // Set test timeout
+  timeout: process.env.CI ? 0 : 30000, // Added timeout property
+
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    screenshot: 'on',
+    screenshot: 'only-on-failure',
     video: 'on-first-retry',
-    headless: process.env.CI ? true : false
+    headless: process.env.CI ? true : false,
+    launchOptions: {
+      args: ["--start-maximized"],
+    }
   },
 
   /* Configure projects for major browsers */

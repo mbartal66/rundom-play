@@ -4,6 +4,8 @@ import ProductsPage from '../pages/ProductsPage';
 import GlobalConstants from '../helpers/GlobalConstants';
 import { PagesURL } from '../helpers/PagesURLEnum';
 import CartPage from '../pages/CartPage';
+import CheckoutInfoPage from '../pages/CheckoutInfoPage';
+import CheckoutOverviewPage from '../pages/CheckoutOverviewPage';
 
 
 test('Demo Test', async ({ page }) => {
@@ -25,6 +27,8 @@ test('Sanity Test', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const productsPage = new ProductsPage(page);
   const cartPage = new CartPage(page);
+  const checkoutInfoPage = new CheckoutInfoPage(page);
+  const checkoutOverviewPage = new CheckoutOverviewPage(page);
 
   await loginPage.loginToApplication();
   await productsPage.validatePageUrl(GlobalConstants.BASE_URL + PagesURL.INVENTORY);
@@ -43,12 +47,25 @@ test('Sanity Test', async ({ page }) => {
   await cartPage.validateTitle("Your Cart");
   await cartPage.validateNumberOfCartItems(products.length);
 
-  await page.locator('[data-test="checkout"]').click();
-  await page.locator('[data-test="firstName"]').fill('Meir');
+  // Remove one item from the cart
+  await cartPage.removeCartItem('Sauce Labs Backpack');
+  await cartPage.validateNumberOfCartItems(products.length-1);
+
+
+  //await page.locator('[data-test="checkout"]').click();
+  await cartPage.clickOnCheckoutButton();
+  /* await page.locator('[data-test="firstName"]').fill('Meir');
   await page.locator('[data-test="lastName"]').fill('Bar-Tal');
   await page.locator('[data-test="postalCode"]').fill('7403707');
-  await page.locator('[data-test="continue"]').click();
-  await page.locator('[data-test="finish"]').click();
+  await page.locator('[data-test="continue"]').click(); */
+
+  await checkoutInfoPage.validateTitle('Checkout: Your Information');
+  await checkoutInfoPage.fillCheckoutInfo('Meir', 'Bar-Tal', '7403707');
+  await checkoutInfoPage.clickOnContinue();
+
+  await checkoutOverviewPage.validateTitle('Checkout: Overview');  
+  //await page.locator('[data-test="finish"]').click();
+  await checkoutOverviewPage.clickOnFinish();
   await page.locator('[data-test="back-to-products"]').click();
   await page.getByRole('button', { name: 'Open Menu'}).click();
   await page.getByRole('link', {name: 'Reset App State'}).click();
